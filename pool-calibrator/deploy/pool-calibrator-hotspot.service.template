@@ -1,0 +1,23 @@
+[Unit]
+Description=PoolSight offline calibration web app
+After=NetworkManager.service network.target
+Wants=NetworkManager.service
+
+[Service]
+Type=simple
+User=@APP_USER@
+Group=@APP_GROUP@
+WorkingDirectory=@APP_DIR@
+Environment=POOL_CALIBRATOR_DATA_DIR=@DATA_DIR@
+ExecStartPre=/bin/sleep 4
+ExecStartPre=-@APP_DIR@/.venv-pi/bin/python @APP_DIR@/camera_capture.py --data-dir @DATA_DIR@
+ExecStart=@APP_DIR@/.venv-pi/bin/gunicorn --workers 1 --threads 4 --bind 0.0.0.0:80 --access-logfile - app:app
+Restart=on-failure
+RestartSec=3
+PrivateTmp=true
+NoNewPrivileges=true
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target

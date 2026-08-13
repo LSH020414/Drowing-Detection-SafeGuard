@@ -1,0 +1,8 @@
+__pycache__/
+.venv/
+.pytest_cache/
+data/uploads/*
+data/previews/*
+data/config.json
+!data/uploads/.gitkeep
+!data/previews/.gitkeep
