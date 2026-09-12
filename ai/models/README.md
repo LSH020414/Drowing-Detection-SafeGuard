@@ -9,6 +9,8 @@
 | `pool_head_best.pt` | 19,219,025 bytes | `39536439D62B43C7DE210043CB48341C34A53461B7659191AD0A7269B12BE1DE` |
 | `classifier_best.pt` | 5,599,231 bytes | `031A31349A245E7357FF6BDC0B0489DBFBC85E142F96A09B9979C2D640821AEA` |
 | `drowning_classifier_50x14_hailo.onnx` | 5,597,170 bytes | `3E8D05B8A805AC895106AAFAB9F57814C1B81AD88C9836928623F0B8F72F8982` |
+| `pool_head_best_512.hef` | 17,908,563 bytes | `41563FE40DAE86F24BB07253A2844F724ECE0482DFA6F9B234611CA9E9983FF8` |
+| `drowning_classifier_50x14_hailo.hef` | 1,221,442 bytes | `C027C241ED97B6F125124612917C3BCD6EBEB014D7F8DD92CB6B8B4832AB38BD` |
 
 기본 배치 위치:
 
@@ -18,6 +20,8 @@ ai/models/
 ├─ classifier_best.pt
 └─ drowning_classifier_50x14_hailo.onnx
 ```
+
+두 HEF 파일은 [`deployment/pi5_hailo/`](../../deployment/pi5_hailo/)에 Git LFS 객체로 포함합니다. HailoRT/DFC 버전 호환성을 실제 Pi에서 확인해야 합니다.
 
 PowerShell에서 무결성을 확인합니다.
 

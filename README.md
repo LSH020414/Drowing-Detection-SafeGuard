@@ -63,7 +63,7 @@ Arduino Nano
 5. 연속 LOST 조건이 충족되면 분류기 결과보다 우선해 `PASSIVE_DROWNING`으로 전환합니다.
 6. 보정 웹 도구의 homography로 픽셀을 미터 좌표로 바꾸고 제어 명령을 MCU에 전달합니다.
 
-현재 V12 추적/규칙 엔진과 Temporal CNN 학습·내보내기 코드는 각각 확보되어 있습니다. **두 모듈을 Raspberry Pi/Hailo 실시간 루프로 완전히 결합하는 작업은 아직 남아 있습니다.**
+PC용 V12 추적/규칙 엔진과 Temporal CNN 학습·내보내기 코드에 더해, Hailo detector·classifier·ByteTrack·PASSIVE LOST rule을 한 루프로 실행하는 Raspberry Pi 5용 최종 배포 코드와 HEF 모델도 확보했습니다. 다만 **두 카메라 Global ID, homography 좌표, Nano 발사 제어까지 하나의 현장 런타임으로 연결하는 작업은 아직 남아 있습니다.**
 
 ## 저장소 구조
 
@@ -81,6 +81,8 @@ Arduino Nano
 │  ├─ schema/         # 특징 스키마
 │  └─ validation/     # Swim2 cascade 검증 코드
 ├─ demo/              # 발표/시연용 tracking video 생성
+├─ deployment/
+│  └─ pi5_hailo/      # Pi5 + Hailo-8 최종 실시간 실행 묶음
 ├─ hardware/          # Pi5 → Nano → motor driver 제어 구조
 ├─ pool-calibrator/   # 2-camera homography 보정 웹 도구
 ├─ docs/              # 아키텍처, 상태, 원본 이력
@@ -100,6 +102,7 @@ Arduino Nano
 | [`data/validation/test_swim2_three_strokes_cascade_v2.py`](data/validation/test_swim2_three_strokes_cascade_v2.py) | Swim2 3영법 cascade 검증 |
 | [`data/validation/test_swim2_person_head_cascade_0039.py`](data/validation/test_swim2_person_head_cascade_0039.py) | Breaststroke 포함 단일 영상 cascade 기준 |
 | [`demo/make_demo_tracking_video.py`](demo/make_demo_tracking_video.py) | 10Hz 표시 갱신·5px 양자화·시간별 상태 시연 영상 |
+| [`deployment/pi5_hailo/drowning_full-pipeline_final.py`](deployment/pi5_hailo/drowning_full-pipeline_final.py) | Pi Camera + Hailo detector/classifier + ByteTrack + PASSIVE rule 최종 실행 |
 | [`pool-calibrator/`](pool-calibrator/) | 두 카메라 수영장 좌표 보정 웹 도구 |
 
 원본 파일 경로와 SHA-256은 [SOURCE_MANIFEST.md](docs/SOURCE_MANIFEST.md)에 기록했습니다.
@@ -151,6 +154,17 @@ Swim2/Blender extractor
 → make_classifier_calib_npy.py
 ```
 
+### 6. Raspberry Pi 5 + Hailo-8 최종 실행
+
+`deployment/pi5_hailo/`를 Raspberry Pi로 복사한 뒤 해당 폴더에서 실행합니다.
+
+```bash
+cd deployment/pi5_hailo
+python3 drowning_full-pipeline_final.py
+```
+
+화면 없이 상태 로그만 실행하려면 `--no-display`를 추가합니다. HailoRT, Picamera2, `hailo_platform`, Hailo Apps ByteTrack 경로 등 장비별 준비 사항은 [배포 README](deployment/pi5_hailo/README.md)에 정리했습니다.
+
 ## 현재 성능과 상태
 
 - Head detector 최종 기준 파일: `pool_head_best.pt`
@@ -158,6 +172,7 @@ Swim2/Blender extractor
 - 시계열 입력: 10Hz × 5초 = 50 timestep, 14 feature
 - 분류기: SWIMMING / FLOATING / ACTIVE 3-class Temporal CNN
 - PASSIVE: 장시간 LOST rule override
+- Pi5/Hailo 배포 묶음: detector HEF + classifier HEF + ByteTrack + 통합 실행 코드 확보
 - classifier dataset: train 2,928 / validation 299 / test 421 windows
 - 로컬 held-out test confusion matrix: 418/421, 약 **99.3%**
 - 카메라 보정 웹 도구: 자동 테스트 12개 통과 기록
@@ -167,9 +182,10 @@ Swim2/Blender extractor
 ## 남은 작업
 
 - Swim2 추가 라벨로 Head Detector 재파인튜닝 후 최종 모델 교체 여부 결정
-- Temporal CNN ONNX를 Hailo HEF로 변환하고 Raspberry Pi 5 실시간 추론에 통합
-- V12 output → 50×14 feature buffer → classifier → PASSIVE override 단일 런타임 연결
+- Pi5/Hailo 최종 묶음의 실제 Camera Module 3 장시간 안정성·FPS·온도 측정
+- 배포 코드의 `ACTIVE` 출력명을 프로젝트 표준 `ACTIVE_DROWNING`과 통일
 - 두 Camera Module 3의 현장 homography 오차 및 Global ID 검증
+- Pi5 실시간 AI 결과 → homography → 발사 제어 런타임 연결
 - Pi5 → Arduino Nano serial protocol과 Nano firmware 확정
 - BLD-50, DMD-150, A4988 실제 장비별 방향·속도·limit/home/E-stop 시험
 - 실제 익수 상황을 모사한 안전 시험과 false alarm/누락률 측정

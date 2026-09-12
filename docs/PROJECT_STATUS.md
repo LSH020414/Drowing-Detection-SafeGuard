@@ -16,6 +16,7 @@
 - Swim2 cascade 검증 기준 코드 2종 보존
 - 시간별 상태를 표시하는 발표용 demo 코드 보존
 - 두 카메라 보정 웹 도구와 인계 문서 보존
+- Pi5/Hailo 실시간 통합 코드, detector HEF, 50×14 classifier HEF, tracker 설정 보존
 
 ## 확인된 결과
 
@@ -31,8 +32,9 @@
 
 - 새 Swim2 파인튜닝 모델을 `pool_head_best.pt` 대체본으로 확정
 - Detector/V12/Temporal CNN/PASSIVE rule의 단일 실시간 실행
-- Hailo HEF 생성 및 Raspberry Pi 5 실기 성능 측정
+- 제공된 Hailo HEF와 통합 코드의 Raspberry Pi 5 실기 성능·장시간 안정성 측정
 - 두 카메라 Global ID 실시간 통합
+- Pi5 AI 상태 출력과 homography/발사 제어 연결
 - Nano 최종 firmware와 실제 BLD-50/DMD-150/A4988 wiring 확정
 - 현장 false positive/false negative, 지연시간, 조준 오차 측정
 
@@ -42,3 +44,4 @@
 - 로컬 test accuracy는 동일 출처·증강 데이터가 포함된 분할의 영향을 받을 수 있습니다.
 - `ai/configs/v12_rule_config.json`과 V12 코드 상수에 일부 차이가 있으므로 실험 재현 시 사용 설정을 명시해야 합니다.
 - `pool-calibrator`의 진행 중 ESP32 firmware는 Nano 목표 하드웨어와 별개입니다.
+- 최종 Pi5 코드의 classifier 라벨은 `ACTIVE`이며 프로젝트 표준 문서의 `ACTIVE_DROWNING`과 이름을 통일해야 합니다.

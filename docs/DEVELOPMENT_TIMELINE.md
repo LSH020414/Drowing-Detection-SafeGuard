@@ -220,6 +220,8 @@ Head Detector
 
 640×640 detector를 Hailo용으로 컴파일할 때 `Agent infeasible` 문제가 발생해 입력을 512×512로 줄여 변환을 시도했습니다. 변환은 진행됐지만 detection 성능이 크게 하락해 최종 해결 과제로 남겼습니다.
 
+이후 2026년 9월 12일에 512 입력 detector HEF, 50×14 classifier HEF, Hailo 실시간 통합 코드와 tracker 설정으로 구성된 최종 배포 묶음을 저장소에 반영했습니다. 이는 변환 산출물이 확보됐다는 뜻이며, 앞서 확인된 성능 저하가 현장 기준으로 해결됐다는 뜻은 아닙니다.
+
 ### 22. Pi→Arduino/ESP32 통신 시험
 
 초기에는 Uno와 ESP32를 함께 검토했고 Raspberry Pi에서 USB serial 장치 `/dev/ttyUSB0`, `/dev/ttyUSB1` 인식까지 확인했습니다. 이 단계는 최종 MCU 확정 전 통신 실험입니다.
@@ -306,4 +308,4 @@ Camera Module 3 × 2
 → 조준 / 발사 / 재장전
 ```
 
-각 요소의 기준 코드와 문서는 저장소에 정리되어 있지만, Hailo 실시간 추론·두 카메라 Global ID·Nano 최종 firmware·실제 발사 안전 연동은 아직 통합 검증 단계로 남아 있습니다.
+Hailo detector·classifier·ByteTrack·PASSIVE rule 단일 카메라 런타임은 최종 배포 묶음으로 정리했습니다. 두 카메라 Global ID, homography, Nano 최종 firmware, 실제 발사 안전 연동은 아직 통합 검증 단계로 남아 있습니다.
