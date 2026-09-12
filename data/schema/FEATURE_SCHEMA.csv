@@ -1,0 +1,15 @@
+feature
+detected
+confidence
+cx_norm
+cy_norm
+head_scale
+dx
+dy
+speed
+scale_change
+lost_event
+redetect_event
+consecutive_missing
+visible_ratio
+missing_ratio
