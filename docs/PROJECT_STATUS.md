@@ -2,6 +2,8 @@
 
 기준일: 2026-09-12
 
+시간순 개발 과정과 설계 변경 이유는 [DEVELOPMENT_TIMELINE.md](DEVELOPMENT_TIMELINE.md)를 참고합니다.
+
 ## 확정·보존된 항목
 
 - `pool_head_best.pt` 기준 모델 파일과 SHA-256 확인

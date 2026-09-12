@@ -37,6 +37,23 @@ Arduino Nano
 
 상세 설계는 [시스템 아키텍처](docs/ARCHITECTURE.md), 하드웨어 신호 구조는 [하드웨어 문서](hardware/README.md)를 참고합니다.
 
+## 개발 과정
+
+프로젝트는 전체 구조 설계에서 시작해 Head Detector, CVAT 라벨링, Tracker 비교, 50 timestep 시계열 모델, Hailo 이식, 발사대 제어, 시연 영상 순으로 발전했습니다.
+
+| 시기 | 핵심 작업 | 결정·변경 |
+|---|---|---|
+| 7월 말~8월 초 | 전체 시스템과 수영장 좌표계 설계 | Camera → Pi5 → AI → Homography → 발사 구조 확정 |
+| 8월 초~중순 | Head Detector와 CVAT 환경 구축 | 전신 대신 머리 중심 검출, 잠김 구간은 같은 ID의 `outside=True` |
+| 8월 중순~말 | Tracker·ReID 비교 | ByteTrack + V12 Stable ID를 기준으로 선정 |
+| 8월 말 | 발사대와 모터 드라이버 구체화 | 수평축을 NEMA17에서 DC 웜기어모터 방향으로 변경 |
+| 9월 초 | Swim2·SwimXYZ·Blender 데이터 구축 | 10Hz × 5초 = 50 timestep, 4개 상태 체계 확정 |
+| 9월 초 | Temporal CNN·PASSIVE rule 설계 | 3-class CNN + 장시간 LOST override로 역할 분리 |
+| 9월 초 | Raspberry Pi/Hailo 및 MCU 시험 | 640→512 변환 이슈 확인, ESP32/Uno 시험 후 Nano 목표 구조로 정리 |
+| 최근 | 발표용 추적 영상 제작 | 고정 ID, 시간별 상태, 화면 경계 보정, 10Hz·5px 박스 표시 적용 |
+
+29단계의 상세 작업 이력과 당시 결과는 [개발 타임라인](docs/DEVELOPMENT_TIMELINE.md)에 정리했습니다.
+
 ## 소프트웨어 파이프라인
 
 1. `pool_head_best.pt`가 프레임별 머리 박스와 confidence를 검출합니다.
@@ -157,4 +174,4 @@ Swim2/Blender extractor
 - BLD-50, DMD-150, A4988 실제 장비별 방향·속도·limit/home/E-stop 시험
 - 실제 익수 상황을 모사한 안전 시험과 false alarm/누락률 측정
 
-자세한 완료/보류 상태는 [PROJECT_STATUS.md](docs/PROJECT_STATUS.md)를 참고합니다.
+자세한 완료/보류 상태는 [PROJECT_STATUS.md](docs/PROJECT_STATUS.md), 작업 순서는 [DEVELOPMENT_TIMELINE.md](docs/DEVELOPMENT_TIMELINE.md)를 참고합니다.
