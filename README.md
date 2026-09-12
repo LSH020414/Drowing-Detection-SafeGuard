@@ -54,6 +54,16 @@ Arduino Nano
 
 29단계의 상세 작업 이력과 당시 결과는 [개발 타임라인](docs/DEVELOPMENT_TIMELINE.md)에 정리했습니다.
 
+## 데이터와 개발 도구
+
+상태 분류 데이터는 SwimXYZ, 프로젝트 내부 Swim2 4영법 데이터, 실제 부유·익수 영상, Blender/Omniverse 합성 sequence를 정리해 사용했습니다. Head Detector 초기 학습에는 CrowdHuman의 head annotation을 사용했습니다.
+
+- 데이터 출처·수량·split·라벨링·배포 주의사항: [data/README.md](data/README.md)
+- YOLO11·ByteTrack·PyTorch·CVAT·Docker·Hailo 변환 구성: [ai/README.md](ai/README.md)
+- 모델 바이너리·SHA-256·Git LFS: [ai/models/README.md](ai/models/README.md)
+
+외부 원본 영상과 대용량 학습 데이터는 저장소에 포함하지 않으며, 출처별 라이선스와 재배포 조건을 별도로 확인합니다.
+
 ## 소프트웨어 파이프라인
 
 1. `pool_head_best.pt`가 프레임별 머리 박스와 confidence를 검출합니다.

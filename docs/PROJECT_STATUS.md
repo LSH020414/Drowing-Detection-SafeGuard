@@ -17,6 +17,7 @@
 - 시간별 상태를 표시하는 발표용 demo 코드 보존
 - 두 카메라 보정 웹 도구와 인계 문서 보존
 - Pi5/Hailo 실시간 통합 코드, detector HEF, 50×14 classifier HEF, tracker 설정 보존
+- 데이터 출처, 클래스별 split 수량, annotation 규칙, AI/Hailo 도구 버전 문서화
 
 ## 확인된 결과
 
@@ -37,6 +38,8 @@
 - Pi5 AI 상태 출력과 homography/발사 제어 연결
 - Nano 최종 firmware와 실제 BLD-50/DMD-150/A4988 wiring 확정
 - 현장 false positive/false negative, 지연시간, 조준 오차 측정
+- 프로젝트 내부 명칭 `Swim2`의 정확한 공식 출처·라이선스 기록 보완
+- YouTube 원천 영상별 사용·학습·발표·재배포 권한 확인 및 source manifest 작성
 
 ## 주의
 
@@ -45,3 +48,4 @@
 - `ai/configs/v12_rule_config.json`과 V12 코드 상수에 일부 차이가 있으므로 실험 재현 시 사용 설정을 명시해야 합니다.
 - `pool-calibrator`의 진행 중 ESP32 firmware는 Nano 목표 하드웨어와 별개입니다.
 - 최종 Pi5 코드의 classifier 라벨은 `ACTIVE`이며 프로젝트 표준 문서의 `ACTIVE_DROWNING`과 이름을 통일해야 합니다.
+- CrowdHuman 원본 이미지는 공식 이용 조건상 이 저장소에 재배포하지 않습니다.
