@@ -18,6 +18,7 @@
 - 두 카메라 보정 웹 도구와 인계 문서 보존
 - Pi5/Hailo 실시간 통합 코드, detector HEF, 50×14 classifier HEF, tracker 설정 보존
 - 데이터 출처, 클래스별 split 수량, annotation 규칙, AI/Hailo 도구 버전 문서화
+- 개발 배경부터 AI·발사 구조·Hailo 최적화·기대 효과까지 담은 20쪽 개발 발표서 원본 보존
 
 ## 확인된 결과
 
@@ -49,3 +50,5 @@
 - `pool-calibrator`의 진행 중 ESP32 firmware는 Nano 목표 하드웨어와 별개입니다.
 - 최종 Pi5 코드의 classifier 라벨은 `ACTIVE`이며 프로젝트 표준 문서의 `ACTIVE_DROWNING`과 이름을 통일해야 합니다.
 - CrowdHuman 원본 이미지는 공식 이용 조건상 이 저장소에 재배포하지 않습니다.
+- 개발 발표서의 ESP32/Arduino 병행 회로는 발표 당시 설계입니다. 현재 목표 제어 구조는 `hardware/README.md`의 Pi5 → Arduino Nano 구성을 우선합니다.
+- 발표서의 배경 통계와 비교표는 발표자료에 수록된 설명이며, 이 저장소에서 별도의 원문 출처 검증을 완료한 수치는 아닙니다.

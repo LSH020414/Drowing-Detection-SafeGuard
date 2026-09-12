@@ -37,6 +37,22 @@ Arduino Nano
 
 상세 설계는 [시스템 아키텍처](docs/ARCHITECTURE.md), 하드웨어 신호 구조는 [하드웨어 문서](hardware/README.md)를 참고합니다.
 
+## 개발 발표서
+
+2026년 9월에 작성한 20쪽 분량의 개발 발표서 원본을 [`docs/presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf`](docs/presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf)에 보존했습니다.
+
+| 페이지 | 주요 내용 |
+|---|---|
+| 1~4 | AquaGuard 개요, 개발 배경, 수면 위 카메라와 머리 중심 판단 근거 |
+| 5~7 | Detector → Tracker → Classifier 3단계 소프트웨어와 5초 행동 시계열 |
+| 8~10 | 실제 영상·Swim2, Omniverse/Blender, SwimXYZ를 이용한 데이터 구성 |
+| 11~16 | 피칭 머신식 발사대, 장전 장치, 구조 캡슐, 회로와 AI-하드웨어 연결 |
+| 17 | Hailo-8 변환·성능 저하 원인 분석과 detector/classifier 최적화 방향 |
+| 18~19 | 감지부터 구조 지원까지의 차별성, 활용처와 기대 효과 |
+| 20 | 6~9월 개발 일정과 팀 업무 분장 |
+
+발표서는 당시 설계와 설명을 보존한 자료입니다. 슬라이드의 ESP32/Arduino 병행 구성처럼 이후 변경된 내용이 있으므로, **현재 구현 기준은 이 README와 [PROJECT_STATUS.md](docs/PROJECT_STATUS.md), [hardware/README.md](hardware/README.md)를 우선합니다.**
+
 ## 개발 과정
 
 프로젝트는 전체 구조 설계에서 시작해 Head Detector, CVAT 라벨링, Tracker 비교, 50 timestep 시계열 모델, Hailo 이식, 발사대 제어, 시연 영상 순으로 발전했습니다.
@@ -52,7 +68,7 @@ Arduino Nano
 | 9월 초 | Raspberry Pi/Hailo 및 MCU 시험 | 640→512 변환 이슈 확인, ESP32/Uno 시험 후 Nano 목표 구조로 정리 |
 | 최근 | 발표용 추적 영상 제작 | 고정 ID, 시간별 상태, 화면 경계 보정, 10Hz·5px 박스 표시 적용 |
 
-29단계의 상세 작업 이력과 당시 결과는 [개발 타임라인](docs/DEVELOPMENT_TIMELINE.md)에 정리했습니다.
+30단계의 상세 작업 이력과 당시 결과는 [개발 타임라인](docs/DEVELOPMENT_TIMELINE.md)에 정리했습니다.
 
 ## 데이터와 개발 도구
 
@@ -96,6 +112,7 @@ PC용 V12 추적/규칙 엔진과 Temporal CNN 학습·내보내기 코드에 �
 ├─ hardware/          # Pi5 → Nano → motor driver 제어 구조
 ├─ pool-calibrator/   # 2-camera homography 보정 웹 도구
 ├─ docs/              # 아키텍처, 상태, 원본 이력
+│  └─ presentation/   # 개발 발표서 PDF 원본
 └─ results/           # 작은 지표·표만 버전 관리
 ```
 
@@ -114,6 +131,7 @@ PC용 V12 추적/규칙 엔진과 Temporal CNN 학습·내보내기 코드에 �
 | [`demo/make_demo_tracking_video.py`](demo/make_demo_tracking_video.py) | 10Hz 표시 갱신·5px 양자화·시간별 상태 시연 영상 |
 | [`deployment/pi5_hailo/drowning_full-pipeline_final.py`](deployment/pi5_hailo/drowning_full-pipeline_final.py) | Pi Camera + Hailo detector/classifier + ByteTrack + PASSIVE rule 최종 실행 |
 | [`pool-calibrator/`](pool-calibrator/) | 두 카메라 수영장 좌표 보정 웹 도구 |
+| [`docs/presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf`](docs/presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf) | 20쪽 개발 발표서 원본 |
 
 원본 파일 경로와 SHA-256은 [SOURCE_MANIFEST.md](docs/SOURCE_MANIFEST.md)에 기록했습니다.
 

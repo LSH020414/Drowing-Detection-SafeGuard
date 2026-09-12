@@ -251,17 +251,27 @@ Raspberry Pi 5
 
 핀 배치와 현재 ESP32 프로토타입과의 차이는 [hardware/README.md](../hardware/README.md)에 기록했습니다.
 
+### 25. 개발 발표서 작성·보존
+
+PDF 메타데이터상 2026년 9월 3일에 작성된 20쪽 개발 발표서에는 문제 정의, 머리 중심 판단 근거, Detector–Tracker–Classifier 구조, 실제·합성 데이터 구성, 발사대·장전 장치·구조 캡슐, Hailo-8 최적화 과정, 기대 효과와 업무 분장이 정리돼 있습니다. 전달받은 원본은 2026년 9월 12일 저장소에 추가했습니다.
+
+- 원본: [AI 학습 기반 수영장 익수 감지 및 구조지원 시스템.pdf](presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf)
+- 총 20쪽, 1,156,549 bytes
+- SHA-256: `12C75C527174FD8EA60B93C70952619630355905DC6572DCE7E84FCD8256FC6D`
+
+발표서의 회로도와 통합 설명에는 ESP32와 Arduino Nano가 함께 등장합니다. 이는 당시의 병행 검토 상태를 보여 주는 기록이며, 이후 최종 목표 MCU는 Arduino Nano로 정리했습니다.
+
 ## 최근: 발표용 시연 영상
 
-### 25. Detector+Tracker 시연 코드
+### 26. Detector+Tracker 시연 코드
 
 `make_demo_tracking_video.py`에 실제 `pool_head_best.pt`와 `bytetrack_pool.yaml`을 연결해 머리 박스와 상태를 표시하도록 했습니다.
 
-### 26. 표시 ID 고정
+### 27. 표시 ID 고정
 
 발표 영상에서는 ByteTrack 내부 ID가 바뀌어도 화면에는 `ID 1`로 표시되도록 했습니다. 이 ID는 성능 평가용 tracking ID가 아니라 시연용입니다.
 
-### 27. 시간별 상태 설정
+### 28. 시간별 상태 설정
 
 영상 구간별로 상태를 직접 지정할 수 있는 `STATE_TIMELINE`을 추가했습니다.
 
@@ -276,11 +286,11 @@ STATE_TIMELINE = [
 
 이 상태 역시 실제 Temporal CNN 출력이 아니라 발표용 수동 라벨입니다.
 
-### 28. 라벨 화면 이탈 수정
+### 29. 라벨 화면 이탈 수정
 
 머리 박스가 프레임 가장자리에 있을 때 `ID 1 | STATE`와 `HEAD confidence`가 화면 밖으로 나가지 않도록 텍스트 크기를 계산해 위·아래·좌우 위치를 제한했습니다.
 
-### 29. 10fps 느낌의 표시 박스
+### 30. 10fps 느낌의 표시 박스
 
 ```python
 DISPLAY_BOX_HZ = 10
