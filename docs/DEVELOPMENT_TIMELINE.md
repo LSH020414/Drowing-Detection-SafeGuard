@@ -308,4 +308,4 @@ Camera Module 3 × 2
 → 조준 / 발사 / 재장전
 ```
 
-Hailo detector·classifier·ByteTrack·PASSIVE rule 단일 카메라 런타임은 최종 배포 묶음으로 정리했습니다. 두 카메라 Global ID, homography, Nano 최종 firmware, 실제 발사 안전 연동은 아직 통합 검증 단계로 남아 있습니다.
+Hailo detector·classifier·ByteTrack·PASSIVE rule 단일 카메라 런타임은 최종 배포 묶음으로 정리했습니다. 
