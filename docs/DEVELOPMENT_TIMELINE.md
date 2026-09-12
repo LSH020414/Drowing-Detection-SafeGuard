@@ -235,9 +235,9 @@ Raspberry Pi 발사대 제어용 Flask server를 구성했습니다. 기존 서�
 192.168.137.2:5001
 ```
 
-### 24. Arduino Nano 통합 방향 확정
+### 24. Arduino Nano 중심 통합 방향 검토
 
-현재 모터 드라이버와 5V 신호 호환 및 단순성을 고려해 최종 목표 MCU를 Arduino Nano 5V/16MHz로 정리했습니다.
+현재 모터 드라이버와 5V 신호 호환 및 단순성을 고려해 당시에는 최종 목표 MCU를 Arduino Nano 5V/16MHz 중심으로 정리했습니다.
 
 ```text
 Raspberry Pi 5
@@ -249,7 +249,7 @@ Raspberry Pi 5
           └─ A4988
 ```
 
-핀 배치와 현재 ESP32 프로토타입과의 차이는 [hardware/README.md](../hardware/README.md)에 기록했습니다.
+이후 수평축은 Nano/UNO, BLDC 2개는 ESP32로 역할을 분리한 최종 소스가 확정됐습니다. 현재 핀과 protocol은 [hardware/README.md](../hardware/README.md)를 우선합니다.
 
 ### 25. 개발 발표서 작성·보존
 
@@ -259,7 +259,7 @@ PDF 메타데이터상 2026년 9월 3일에 작성된 20쪽 개발 발표서에�
 - 총 20쪽, 1,156,549 bytes
 - SHA-256: `12C75C527174FD8EA60B93C70952619630355905DC6572DCE7E84FCD8256FC6D`
 
-발표서의 회로도와 통합 설명에는 ESP32와 Arduino Nano가 함께 등장합니다. 이는 당시의 병행 검토 상태를 보여 주는 기록이며, 이후 최종 목표 MCU는 Arduino Nano로 정리했습니다.
+발표서의 회로도와 통합 설명에는 ESP32와 Arduino Nano가 함께 등장합니다. 이는 당시의 병행 검토 상태를 보여 주는 기록이며, 이후 최종 소스에서는 Nano/UNO가 수평축, ESP32가 BLDC 2개를 담당하도록 역할을 확정했습니다.
 
 ## 최근: 발표용 시연 영상
 
@@ -311,6 +311,17 @@ BOX_QUANTIZE_PX = 5
 
 원본 영상·이미지·ZIP·CVAT crop, 전체 sequence CSV, 가상환경, 로그, cache, 중간 checkpoint/HAR/NPY와 자격 증명이 하드코딩된 legacy script는 추가하지 않았습니다. 선별 파일 해시는 [CURATED_IMPORT_MANIFEST.csv](CURATED_IMPORT_MANIFEST.csv)에 기록했습니다.
 
+### 32. Raspberry Pi 연계 MCU 소스 확정
+
+Raspberry Pi의 익수 판별 이후 actuator 제어를 두 MCU로 분리했습니다.
+
+```text
+Pi5 → Arduino Nano/UNO → 수평 회전: 10° step, -47°~+87° 상태 제한
+Pi5 → ESP32 → BLDC 2개: 5% step, 최대 80%, 정지 후 100%/450ms kick-start
+```
+
+두 장치는 newline 텍스트 명령 `0`, `1`, `2`, `STATUS`와 `ACK`/`ERR`/`STATUS` 응답을 사용합니다. 최종 Arduino IDE 소스는 `hardware/firmware/`에 보존했습니다. 현 단계는 open-loop actuator 제어이며, encoder/RPM feedback, limit/home/E-stop, 수직축과 장전 장치, Pi의 두 serial 포트 통합 시험은 남아 있습니다.
+
 ## 현재 도달점
 
 ```text
@@ -325,9 +336,9 @@ Camera Module 3 × 2
 → PASSIVE_DROWNING
 → Homography
 → target coordinate
-→ Arduino Nano
-→ BLD-50 ×2 / DMD-150 / A4988
-→ 조준 / 발사 / 재장전
+→ Arduino Nano/UNO: 수평 회전
+   + ESP32: BLDC 발사 휠 2개
+→ 조준 / flywheel 구동
 ```
 
 Hailo detector·classifier·ByteTrack·PASSIVE rule 단일 카메라 런타임은 최종 배포 묶음으로 정리했습니다. 

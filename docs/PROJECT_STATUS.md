@@ -22,6 +22,8 @@
 - 누락됐던 4영법·ACTIVE·FLOATING·SwimXYZ 전처리/증강 코드와 Detector Hailo 변환 코드 보존
 - Pool ReID 데이터 추출·학습·평가 코드와 Task 90 tracking 평가/sweep 결과 보존
 - PC용 detector, classifier, ReID와 ONNX 모델을 Git LFS로 보존
+- Raspberry Pi 연계용 Nano/UNO 수평 회전 펌웨어와 ESP32 BLDC 2개 제어 펌웨어 보존
+- 두 MCU의 newline 텍스트 명령 및 `ACK`/`ERR`/`STATUS` 응답 규격 확정
 
 ## 확인된 결과
 
@@ -40,7 +42,9 @@
 - 제공된 Hailo HEF와 통합 코드의 Raspberry Pi 5 실기 성능·장시간 안정성 측정
 - 두 카메라 Global ID 실시간 통합
 - Pi5 AI 상태 출력과 homography/발사 제어 연결
-- Nano 최종 firmware와 실제 BLD-50/DMD-150/A4988 wiring 확정
+- Pi5의 Nano/UNO·ESP32 두 serial 포트 통합 발사 순서
+- 수평축 encoder/limit/home/E-stop 및 BLDC RPM feedback 기반 실기 검증
+- 수직 A4988와 장전·투입 actuator 펌웨어·배선 확정
 - 현장 false positive/false negative, 지연시간, 조준 오차 측정
 - 프로젝트 내부 명칭 `Swim2`의 정확한 공식 출처·라이선스 기록 보완
 - YouTube 원천 영상별 사용·학습·발표·재배포 권한 확인 및 source manifest 작성
@@ -50,9 +54,9 @@
 - demo의 상태 라벨과 고정 ID는 발표용이며 AI 성능 결과가 아닙니다.
 - 로컬 test accuracy는 동일 출처·증강 데이터가 포함된 분할의 영향을 받을 수 있습니다.
 - `ai/configs/v12_rule_config.json`과 V12 코드 상수에 일부 차이가 있으므로 실험 재현 시 사용 설정을 명시해야 합니다.
-- `pool-calibrator`의 진행 중 ESP32 firmware는 Nano 목표 하드웨어와 별개입니다.
+- `pool-calibrator`의 ESP32/BDA3502P/TB6600 작업본은 `hardware/firmware/`의 최종 두 MCU 소스와 별개입니다.
 - 최종 Pi5 코드의 classifier 라벨은 `ACTIVE`이며 프로젝트 표준 문서의 `ACTIVE_DROWNING`과 이름을 통일해야 합니다.
 - CrowdHuman 원본 이미지는 공식 이용 조건상 이 저장소에 재배포하지 않습니다.
-- 개발 발표서의 ESP32/Arduino 병행 회로는 발표 당시 설계입니다. 현재 목표 제어 구조는 `hardware/README.md`의 Pi5 → Arduino Nano 구성을 우선합니다.
+- 개발 발표서의 회로는 발표 당시 설계입니다. 현재 제어 기준은 `hardware/README.md`의 Pi5 → Nano/UNO(수평축) 및 Pi5 → ESP32(BLDC 2개) 구성입니다.
 - 발표서의 배경 통계와 비교표는 발표자료에 수록된 설명이며, 이 저장소에서 별도의 원문 출처 검증을 완료한 수치는 아닙니다.
 - Task 90 한 건에서는 V12가 Raw ByteTrack보다 ID switch는 적었지만 IDF1은 낮았습니다. Stable-ID 개선을 전체 tracking 성능 개선으로 단정하지 않습니다.

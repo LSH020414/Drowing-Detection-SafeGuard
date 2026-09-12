@@ -28,11 +28,8 @@ Temporal CNN: SWIMMING / FLOATING / ACTIVE
 Homography → 수영장 실제 X, Y 좌표
         ↓
 USB Serial
-        ↓
-Arduino Nano
-        ├─ BLD-50 × 2 → 상·하부 BLDC 발사 휠
-        ├─ DMD-150    → 수평 DC 웜기어모터
-        └─ A4988      → 수직 NEMA17 스테퍼
+        ├─ Arduino Nano/UNO → 수평 회전 모터(IN1/PWM/IN2)
+        └─ ESP32            → BLDC 발사 휠 2개(PWM/DIR)
 ```
 
 상세 설계는 [시스템 아키텍처](docs/ARCHITECTURE.md), 하드웨어 신호 구조는 [하드웨어 문서](hardware/README.md)를 참고합니다.
@@ -66,9 +63,9 @@ Arduino Nano
 | 9월 초 | Swim2·SwimXYZ·Blender 데이터 구축 | 10Hz × 5초 = 50 timestep, 4개 상태 체계 확정 |
 | 9월 초 | Temporal CNN·PASSIVE rule 설계 | 3-class CNN + 장시간 LOST override로 역할 분리 |
 | 9월 초 | Raspberry Pi/Hailo 및 MCU 시험 | 640→512 변환 이슈 확인, ESP32/Uno 시험 후 Nano 목표 구조로 정리 |
-| 최근 | 발표용 추적 영상 제작 | 고정 ID, 시간별 상태, 화면 경계 보정, 10Hz·5px 박스 표시 적용 |
+| 최근 | 발표용 추적 영상·MCU 소스 확정 | 10Hz·5px 박스 표시와 Pi 연계용 Nano/UNO·ESP32 텍스트 프로토콜 적용 |
 
-31단계의 상세 작업 이력과 당시 결과는 [개발 타임라인](docs/DEVELOPMENT_TIMELINE.md)에 정리했습니다.
+32단계의 상세 작업 이력과 당시 결과는 [개발 타임라인](docs/DEVELOPMENT_TIMELINE.md)에 정리했습니다.
 
 ## 데이터와 개발 도구
 
@@ -114,7 +111,8 @@ PC용 V12 추적/규칙 엔진과 Temporal CNN 학습·내보내기 코드에 �
 │  └─ tracking/       # V10/V11/V12 GT 평가와 threshold sweep
 ├─ deployment/
 │  └─ pi5_hailo/      # Pi5 + Hailo-8 최종 실시간 실행 묶음
-├─ hardware/          # Pi5 → Nano → motor driver 제어 구조
+├─ hardware/
+│  └─ firmware/       # Nano/UNO 수평축 및 ESP32 BLDC 최종 MCU 소스
 ├─ pool-calibrator/   # 2-camera homography 보정 웹 도구
 ├─ docs/              # 아키텍처, 상태, 원본 이력
 │  └─ presentation/   # 개발 발표서 PDF 원본
@@ -135,6 +133,8 @@ PC용 V12 추적/규칙 엔진과 Temporal CNN 학습·내보내기 코드에 �
 | [`data/validation/test_swim2_person_head_cascade_0039.py`](data/validation/test_swim2_person_head_cascade_0039.py) | Breaststroke 포함 단일 영상 cascade 기준 |
 | [`demo/make_demo_tracking_video.py`](demo/make_demo_tracking_video.py) | 10Hz 표시 갱신·5px 양자화·시간별 상태 시연 영상 |
 | [`deployment/pi5_hailo/drowning_full-pipeline_final.py`](deployment/pi5_hailo/drowning_full-pipeline_final.py) | Pi Camera + Hailo detector/classifier + ByteTrack + PASSIVE rule 최종 실행 |
+| [`hardware/firmware/arduino_nano_uno/arduino_launcher_motor.ino`](hardware/firmware/arduino_nano_uno/arduino_launcher_motor.ino) | Nano/UNO 수평 회전 제어, 각도 상태·제한, ACK/ERR/STATUS 시리얼 프로토콜 |
+| [`hardware/firmware/esp32/esp32_bldc_controller.ino`](hardware/firmware/esp32/esp32_bldc_controller.ino) | ESP32 BLDC 2축 속도 제어, 5% step, 80% 제한, kick-start, 시리얼 응답 |
 | [`ai/reid/`](ai/reid/) | Pool ReID용 CVAT crop 추출·학습·유사도 평가 |
 | [`experiments/tracking/`](experiments/tracking/) | Task 90 tracking GT 평가와 geometry/ReID sweep |
 | [`pool-calibrator/`](pool-calibrator/) | 두 카메라 수영장 좌표 보정 웹 도구 |
@@ -207,6 +207,10 @@ python3 drowning_full-pipeline_final.py
 
 화면 없이 상태 로그만 실행하려면 `--no-display`를 추가합니다. HailoRT, Picamera2, `hailo_platform`, Hailo Apps ByteTrack 경로 등 장비별 준비 사항은 [배포 README](deployment/pi5_hailo/README.md)에 정리했습니다.
 
+### 7. MCU 펌웨어
+
+Arduino IDE에서 각 `.ino` 파일을 같은 이름의 sketch 폴더째 열어 업로드합니다. Nano/UNO는 9600 baud, ESP32는 115200 baud이며, 두 장치는 newline으로 끝나는 `0`, `1`, `2`, `STATUS` 명령과 `ACK`/`ERR`/`STATUS` 응답을 사용합니다. 정확한 핀과 명령 의미는 [하드웨어 문서](hardware/README.md)에 있습니다.
+
 ## 현재 성능과 상태
 
 - Head detector 최종 기준 파일: `pool_head_best.pt`
@@ -215,6 +219,7 @@ python3 drowning_full-pipeline_final.py
 - 분류기: SWIMMING / FLOATING / ACTIVE 3-class Temporal CNN
 - PASSIVE: 장시간 LOST rule override
 - Pi5/Hailo 배포 묶음: detector HEF + classifier HEF + ByteTrack + 통합 실행 코드 확보
+- Pi 연계 MCU 소스: Nano/UNO 수평 회전 제어 + ESP32 BLDC 2개 속도 제어 확정
 - classifier dataset: train 2,928 / validation 299 / test 421 windows
 - 로컬 held-out test confusion matrix: 418/421, 약 **99.3%**
 - 카메라 보정 웹 도구: 자동 테스트 12개 통과 기록
@@ -231,8 +236,10 @@ Tracking 수치는 V12가 ID 전환을 줄인 대신 해당 단일 시험의 IDF
 - 배포 코드의 `ACTIVE` 출력명을 프로젝트 표준 `ACTIVE_DROWNING`과 통일
 - 두 Camera Module 3의 현장 homography 오차 및 Global ID 검증
 - Pi5 실시간 AI 결과 → homography → 발사 제어 런타임 연결
-- Pi5 → Arduino Nano serial protocol과 Nano firmware 확정
-- BLD-50, DMD-150, A4988 실제 장비별 방향·속도·limit/home/E-stop 시험
+- Pi5에서 Nano/UNO와 ESP32 두 serial 장치를 함께 운용하는 발사 시퀀스 통합
+- 수평축 10° 이동시간 보정과 실제 각도 센서/limit/home/E-stop 검증
+- BLDC 실제 회전 방향·RPM·80% 출력과 kick-start 시험
+- 수직 A4988, 장전·발사 액추에이터 및 하드웨어 interlock 구현
 - 실제 익수 상황을 모사한 안전 시험과 false alarm/누락률 측정
 
 자세한 완료/보류 상태는 [PROJECT_STATUS.md](docs/PROJECT_STATUS.md), 작업 순서는 [DEVELOPMENT_TIMELINE.md](docs/DEVELOPMENT_TIMELINE.md)를 참고합니다.

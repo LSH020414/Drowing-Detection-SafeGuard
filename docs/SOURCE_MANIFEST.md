@@ -16,6 +16,8 @@
 | `demo/make_demo_tracking_video.py` | 2026-09-03 20:03:52 | `277A264F81DB0DD08469798A57BCB9FE84C3C1E349B9B4939E3713700F7892F4` |
 | `ai/configs/bytetrack_pool.yaml` | 2026-08-24 12:23:42 | `110F518D6E05F32E2B0CB874855BDD9DF26B70ABC642E07F6FA0A4B48D351F15` |
 | `docs/presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf` | 2026-09-12 20:53:36 | `12C75C527174FD8EA60B93C70952619630355905DC6572DCE7E84FCD8256FC6D` |
+| `hardware/firmware/arduino_nano_uno/arduino_launcher_motor.ino` | 2026-09-12 21:34:28 | `D0DF60455FBF37ECCE5EE266F9A7AA68CF0324E03841EEE95B0EA0AA8B81ABB2` |
+| `hardware/firmware/esp32/esp32_bldc_controller.ino` | 2026-09-12 21:33:46 | `08B35519DE745CD2AF6C5264DCF48360C405A7D89AC1C47C9ACC5B75F4FC999E` |
 
 모델 해시는 [`ai/models/README.md`](../ai/models/README.md)에 별도로 기록합니다. 원본 절대 경로는 개인 PC 구조에 의존하므로 공개 문서에는 넣지 않았습니다.
 
