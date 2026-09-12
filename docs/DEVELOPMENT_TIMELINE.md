@@ -299,6 +299,18 @@ BOX_QUANTIZE_PX = 5
 
 표시 박스를 초당 10회 갱신하고 좌표를 5px 단위로 양자화해 위치와 크기가 실제 10fps 추적처럼 단계적으로 변하도록 했습니다.
 
+### 31. 로컬 AI 작업 폴더 선별 보존
+
+2026년 9월 12일 약 49만 파일·405GB 규모의 `머리 추적` 작업 폴더를 저장소와 해시 비교했습니다. 이미 보존된 최종 코드와 HEF는 중복 추가하지 않고 다음 항목만 선별했습니다.
+
+- 최종 데이터 추출·증강에 빠져 있던 코드
+- Detector Hailo 변환과 calibration 생성 코드
+- Pool ReID 추출·학습·평가 코드
+- V10/V11/V12 tracking 평가 코드와 작은 결과표
+- PC 재현에 필요한 최종 PT/ONNX 모델
+
+원본 영상·이미지·ZIP·CVAT crop, 전체 sequence CSV, 가상환경, 로그, cache, 중간 checkpoint/HAR/NPY와 자격 증명이 하드코딩된 legacy script는 추가하지 않았습니다. 선별 파일 해시는 [CURATED_IMPORT_MANIFEST.csv](CURATED_IMPORT_MANIFEST.csv)에 기록했습니다.
+
 ## 현재 도달점
 
 ```text

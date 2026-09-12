@@ -128,10 +128,19 @@ visible_ratio, missing_ratio
 
 - `extraction/extract_swim2_real_normal.py`: Swim2 실제 정상 수영 시계열 추출
 - `extraction/extract_blender_image_sequences_v12.py`: Blender ACTIVE/FLOATING 시계열 추출
+- `extraction/extract_normal_4strokes_full_v3.py`: CVAT XML이 든 4영법 ZIP을 50-step sequence로 변환
+- `processing/augment_normal_4strokes_integrated_v1.py`: 4영법 SWIMMING train augmentation과 video split
+- `extraction/extract_active_gt_final.py` + `processing/augment_active_sequences_v1.py`: 실제 ACTIVE 확정 sequence와 train augmentation
+- `extraction/select_floating_candidates.py` → `extract_floating_review_clips.py` → `finalize_floating_sequences.py`: 실제 FLOATING 후보 검수·확정 흐름
+- `extraction/extract_swimxyz_clean_normal.py` + `processing/finalize_swimxyz_normal.py`: SwimXYZ 정상 수영 선별·확정
+- `cvat/prepare_swim2_single_swimmer_cvat.py`: Swim2 단일 수영자 CVAT 작업 생성
+- `preparation/convert_crowdhuman_to_yolo.py`: CrowdHuman head annotation을 YOLO 형식으로 변환
 - `validation/test_swim2_three_strokes_cascade_v2.py`: 3영법 person→head cascade 검증
 - `validation/test_swim2_person_head_cascade_0039.py`: 단일 영상/Breaststroke 포함 기준 검증
 - `processing/build_final_classifier_dataset_v1.py`: source/video window 단위 최종 split 구성
 - `schema/FEATURE_SCHEMA.csv`: classifier 입력 특징 정의
+
+각 단계의 전체 sequence CSV 대신 클래스·영법별 집계표만 [`results/data/`](../results/data/)에 보존합니다.
 
 ## 데이터 보관 원칙
 

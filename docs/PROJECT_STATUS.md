@@ -19,6 +19,9 @@
 - Pi5/Hailo 실시간 통합 코드, detector HEF, 50×14 classifier HEF, tracker 설정 보존
 - 데이터 출처, 클래스별 split 수량, annotation 규칙, AI/Hailo 도구 버전 문서화
 - 개발 배경부터 AI·발사 구조·Hailo 최적화·기대 효과까지 담은 20쪽 개발 발표서 원본 보존
+- 누락됐던 4영법·ACTIVE·FLOATING·SwimXYZ 전처리/증강 코드와 Detector Hailo 변환 코드 보존
+- Pool ReID 데이터 추출·학습·평가 코드와 Task 90 tracking 평가/sweep 결과 보존
+- PC용 detector, classifier, ReID와 ONNX 모델을 Git LFS로 보존
 
 ## 확인된 결과
 
@@ -52,3 +55,4 @@
 - CrowdHuman 원본 이미지는 공식 이용 조건상 이 저장소에 재배포하지 않습니다.
 - 개발 발표서의 ESP32/Arduino 병행 회로는 발표 당시 설계입니다. 현재 목표 제어 구조는 `hardware/README.md`의 Pi5 → Arduino Nano 구성을 우선합니다.
 - 발표서의 배경 통계와 비교표는 발표자료에 수록된 설명이며, 이 저장소에서 별도의 원문 출처 검증을 완료한 수치는 아닙니다.
+- Task 90 한 건에서는 V12가 Raw ByteTrack보다 ID switch는 적었지만 IDF1은 낮았습니다. Stable-ID 개선을 전체 tracking 성능 개선으로 단정하지 않습니다.

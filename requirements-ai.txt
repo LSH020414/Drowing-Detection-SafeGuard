@@ -4,3 +4,7 @@ pandas
 torch
 ultralytics
 onnx
+matplotlib
+Pillow
+requests
+scipy

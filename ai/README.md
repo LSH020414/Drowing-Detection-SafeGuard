@@ -6,6 +6,7 @@
 - `configs/`: 확정 tracker 설정과 V12 규칙 파라미터 기록
 - `training/`: 50 timestep × 14 feature Temporal CNN 학습
 - `export/`: ONNX/Hailo용 모델 및 calibration 입력 생성
+- `reid/`: CVAT Track crop 추출, Pool ReID 학습과 similarity 평가
 - `models/`: 모델 파일 배치·무결성 안내
 
 V12 파이프라인은 CLI 인자를 지원하지만, 학습·내보내기 코드는 확정 당시 로컬 절대 경로를 보존합니다. 재실행 전 각 파일 상단의 경로를 현재 환경에 맞게 바꿔야 합니다.
@@ -64,3 +65,5 @@ PyTorch checkpoint
 ```
 
 최종 HEF는 `deployment/pi5_hailo/pool_head_best_512.hef`와 `deployment/pi5_hailo/drowning_classifier_50x14_hailo.hef`입니다. HEF는 컴파일에 사용한 DFC와 Raspberry Pi의 HailoRT 호환성을 확인해야 합니다.
+
+Detector 쪽 변환 재현 코드는 `export_detector_onnx_512.py` → `make_hailo_calib_set.py` → `make_hailo_calib_npy_512.py` 순서로 보존했습니다. 대용량 calibration NPY와 HAR은 코드로 다시 만들 수 있어 저장소에서 제외했습니다.

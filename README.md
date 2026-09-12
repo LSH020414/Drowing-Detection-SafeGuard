@@ -68,7 +68,7 @@ Arduino Nano
 | 9월 초 | Raspberry Pi/Hailo 및 MCU 시험 | 640→512 변환 이슈 확인, ESP32/Uno 시험 후 Nano 목표 구조로 정리 |
 | 최근 | 발표용 추적 영상 제작 | 고정 ID, 시간별 상태, 화면 경계 보정, 10Hz·5px 박스 표시 적용 |
 
-30단계의 상세 작업 이력과 당시 결과는 [개발 타임라인](docs/DEVELOPMENT_TIMELINE.md)에 정리했습니다.
+31단계의 상세 작업 이력과 당시 결과는 [개발 타임라인](docs/DEVELOPMENT_TIMELINE.md)에 정리했습니다.
 
 ## 데이터와 개발 도구
 
@@ -100,13 +100,18 @@ PC용 V12 추적/규칙 엔진과 Temporal CNN 학습·내보내기 코드에 �
 │  ├─ pipeline/       # 최종 V12 머리 추적/규칙 파이프라인
 │  ├─ training/       # 50×14 Temporal CNN 학습
 │  ├─ export/         # ONNX/Hailo 변환 및 calibration 입력 생성
-│  └─ models/         # 모델 배치 안내(바이너리는 기본 미포함)
+│  ├─ reid/           # Pool ReID 추출·학습·평가
+│  └─ models/         # PC용 PT/ONNX 모델(Git LFS)
 ├─ data/
 │  ├─ extraction/     # Swim2·Blender 시계열 추출
 │  ├─ processing/     # 최종 classifier dataset 구성
+│  ├─ cvat/           # Swim2 CVAT 작업 준비
+│  ├─ preparation/    # CrowdHuman→YOLO 변환
 │  ├─ schema/         # 특징 스키마
 │  └─ validation/     # Swim2 cascade 검증 코드
 ├─ demo/              # 발표/시연용 tracking video 생성
+├─ experiments/
+│  └─ tracking/       # V10/V11/V12 GT 평가와 threshold sweep
 ├─ deployment/
 │  └─ pi5_hailo/      # Pi5 + Hailo-8 최종 실시간 실행 묶음
 ├─ hardware/          # Pi5 → Nano → motor driver 제어 구조
@@ -130,6 +135,8 @@ PC용 V12 추적/규칙 엔진과 Temporal CNN 학습·내보내기 코드에 �
 | [`data/validation/test_swim2_person_head_cascade_0039.py`](data/validation/test_swim2_person_head_cascade_0039.py) | Breaststroke 포함 단일 영상 cascade 기준 |
 | [`demo/make_demo_tracking_video.py`](demo/make_demo_tracking_video.py) | 10Hz 표시 갱신·5px 양자화·시간별 상태 시연 영상 |
 | [`deployment/pi5_hailo/drowning_full-pipeline_final.py`](deployment/pi5_hailo/drowning_full-pipeline_final.py) | Pi Camera + Hailo detector/classifier + ByteTrack + PASSIVE rule 최종 실행 |
+| [`ai/reid/`](ai/reid/) | Pool ReID용 CVAT crop 추출·학습·유사도 평가 |
+| [`experiments/tracking/`](experiments/tracking/) | Task 90 tracking GT 평가와 geometry/ReID sweep |
 | [`pool-calibrator/`](pool-calibrator/) | 두 카메라 수영장 좌표 보정 웹 도구 |
 | [`docs/presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf`](docs/presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf) | 20쪽 개발 발표서 원본 |
 
@@ -147,7 +154,14 @@ pip install -r requirements-ai.txt
 
 ### 2. 모델 배치
 
-`pool_head_best.pt`를 `ai/models/pool_head_best.pt`에 둡니다. 모델·데이터 관리 규칙과 검증 해시는 [ai/models/README.md](ai/models/README.md)에 있습니다.
+핵심 PT/ONNX/HEF는 Git LFS로 포함돼 있습니다. clone 후 실제 바이너리를 받고 해시를 확인합니다.
+
+```powershell
+git lfs install
+git lfs pull
+```
+
+모델 목록과 검증 해시는 [ai/models/README.md](ai/models/README.md)에 있습니다.
 
 ### 3. V12 추적 실행
 
@@ -204,8 +218,11 @@ python3 drowning_full-pipeline_final.py
 - classifier dataset: train 2,928 / validation 299 / test 421 windows
 - 로컬 held-out test confusion matrix: 418/421, 약 **99.3%**
 - 카메라 보정 웹 도구: 자동 테스트 12개 통과 기록
+- Task 90 tracking 실험: V12 GeoMax 0.45가 Raw ByteTrack 대비 ID switch 63→53, IDF1 0.8821→0.8442
 
 99.3%는 현재 구성된 로컬 분할 결과이며 실제 수영장 일반화 성능을 의미하지 않습니다. 현장 영상, 다른 수영모·조명·카메라 시점에서 별도 검증이 필요합니다.
+
+Tracking 수치는 V12가 ID 전환을 줄인 대신 해당 단일 시험의 IDF1은 낮았다는 뜻입니다. 파라미터 선택은 여러 현장 영상에서 다시 검증해야 합니다.
 
 ## 남은 작업
 

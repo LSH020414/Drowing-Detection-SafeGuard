@@ -1,0 +1,6 @@
+﻿split,windows,rows
+train_real,103,5150
+train_augmented,897,44850
+train_final,1000,50000
+val_real,32,1600
+test_real,33,1650

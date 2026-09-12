@@ -18,3 +18,5 @@
 | `docs/presentation/AI_학습_기반_수영장_익수_감지_및_구조지원_시스템.pdf` | 2026-09-12 20:53:36 | `12C75C527174FD8EA60B93C70952619630355905DC6572DCE7E84FCD8256FC6D` |
 
 모델 해시는 [`ai/models/README.md`](../ai/models/README.md)에 별도로 기록합니다. 원본 절대 경로는 개인 PC 구조에 의존하므로 공개 문서에는 넣지 않았습니다.
+
+2026년 9월 12일 `D:\임베디드 경진대회\머리 추적`에서 추가 선별한 40개 파일의 저장소 경로와 **원본 바이트 기준** 크기·SHA-256은 [`CURATED_IMPORT_MANIFEST.csv`](CURATED_IMPORT_MANIFEST.csv)에 기록했습니다. 텍스트 파일은 Git에 추가될 때 LF로 정규화될 수 있습니다. 원본 영상, 전체 sequence CSV, CVAT crop, 환경 폴더, 캐시, 로그, 중간 checkpoint/HAR/NPY와 자격 증명이 포함된 legacy script는 선별에서 제외했습니다.
