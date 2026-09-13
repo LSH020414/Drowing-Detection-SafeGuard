@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local configuration and secrets
+.env
+.env.*
+config.json
+
+# Runtime outputs
+outputs/
+output/
+runs/
+logs/
+*.log
+
+# Large datasets and media
+datasets/
+raw_data/
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.zip
+*.npy
+*.npz
+
+# Keep documentation placeholders
+!ai/models/README.md
+!results/README.md

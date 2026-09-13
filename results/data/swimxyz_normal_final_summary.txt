@@ -1,0 +1,14 @@
+SwimXYZ NORMAL FINAL
+====================
+CORE: 58
+HARD(no border): 509
+TOTAL: 567
+SEQUENCE ROWS: 28350
+
+Added features:
+mean_speed
+max_speed
+speed_std
+mean_acceleration
+max_acceleration
+acceleration_std

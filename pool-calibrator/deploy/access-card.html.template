@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>카메라 설정 접속 카드</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #eef4f2; color: #082c37; font-family: Arial, "Noto Sans KR", sans-serif; }
+    main { width: min(820px, calc(100% - 32px)); margin: 32px auto; padding: 36px; background: #fff; border-radius: 28px; box-shadow: 0 16px 45px #082c371c; }
+    h1 { margin: 0 0 8px; font-size: 34px; }
+    .lead { margin: 0 0 28px; color: #557078; }
+    .codes { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .card { padding: 24px; border: 2px solid #dce8e5; border-radius: 22px; text-align: center; }
+    .step { display: inline-grid; width: 42px; height: 42px; place-items: center; border-radius: 14px; background: #46cec0; font-size: 22px; font-weight: 800; }
+    h2 { margin: 14px 0 8px; font-size: 22px; }
+    img { width: min(100%, 260px); aspect-ratio: 1; }
+    dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; margin: 18px 0 0; text-align: left; }
+    dt { color: #6c8388; }
+    dd { margin: 0; font-weight: 800; overflow-wrap: anywhere; }
+    .note { margin: 26px 0 0; padding: 16px 18px; border-radius: 14px; background: #eef9f7; line-height: 1.6; }
+    @media (max-width: 650px) { main { padding: 24px; } .codes { grid-template-columns: 1fr; } }
+    @media print { body { background: #fff; } main { width: 100%; margin: 0; padding: 20px; box-shadow: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>수영장 카메라 설정</h1>
+    <p class="lead">인터넷이나 공유기 없이 라즈베리파이에 직접 연결합니다.</p>
+    <section class="codes">
+      <article class="card">
+        <span class="step">1</span>
+        <h2>Wi-Fi 연결</h2>
+        <img src="poolsight-wifi-qr.png" alt="PoolSight Wi-Fi QR 코드">
+        <dl>
+          <dt>이름</dt><dd>@SSID@</dd>
+          <dt>암호</dt><dd>@PASSWORD@</dd>
+        </dl>
+      </article>
+      <article class="card">
+        <span class="step">2</span>
+        <h2>설정 페이지 열기</h2>
+        <img src="poolsight-site-qr.png" alt="PoolSight 웹페이지 QR 코드">
+        <dl>
+          <dt>주소</dt><dd>@SITE_URL@</dd>
+          <dt>예비 주소</dt><dd>@BACKUP_URL@</dd>
+        </dl>
+      </article>
+    </section>
+    <p class="note">휴대폰이 “인터넷에 연결되지 않음”이라고 표시해도 정상입니다. 연결을 유지한 뒤 두 번째 QR 코드를 스캔하세요.</p>
+  </main>
+</body>
+</html>

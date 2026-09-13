@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071b26">
+  <title>{{ site_name }} 카메라 보정</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div>
+      <p class="eyebrow">{{ site_name|upper }} / 최초 설치</p>
+      <h1>카메라 시야를<br>수영장 좌표로 맞춥니다.</h1>
+    </div>
+    <div class="status-pill"><i></i> 로컬 연결</div>
+  </header>
+
+  <main>
+    <section class="intro-card">
+      <div>
+        <span class="step-kicker">01 · 수영장 정보</span>
+        <h2>실제 크기</h2>
+        <p>벽 안쪽 물이 차 있는 영역을 기준으로 입력하세요.</p>
+      </div>
+      <div class="dimension-grid">
+        <label>길이 <span><input id="pool-length" type="number" inputmode="decimal" min="2" max="100" step="0.1" value="25" aria-describedby="dimension-error"> m</span></label>
+        <label>폭 <span><input id="pool-width" type="number" inputmode="decimal" min="2" max="50" step="0.1" value="12.5" aria-describedby="dimension-error"> m</span></label>
+      </div>
+      <p id="dimension-error" class="field-error" role="alert"></p>
+    </section>
+
+    <section class="workspace-heading">
+      <div>
+        <span class="step-kicker">02 · 모서리 지정</span>
+        <h2>두 카메라를 차례로 보정하세요.</h2>
+      </div>
+      <div class="workspace-actions">
+        <div class="order-legend" aria-label="점 자동 정렬 안내">
+          <span>✓ 네 모서리를 아무 순서로 선택</span><span>이미지 위쪽을 0° 기준으로 자동 정렬</span>
+        </div>
+        <button id="capture-all" class="capture-button" type="button">↻ 카메라 1·2 다시 촬영</button>
+        <p id="capture-message" role="status">부팅 때 촬영된 이미지를 확인하고 있습니다.</p>
+      </div>
+    </section>
+
+    <div id="camera-list" class="camera-list"></div>
+
+    <section class="alignment-card">
+      <div class="alignment-copy">
+        <span class="step-kicker">03 · 통합 XY 좌표 확인</span>
+        <h2>두 카메라가 같은 위치를 가리키는지 확인하세요.</h2>
+        <p>두 탑뷰를 50%씩 겹치고 미터 단위 X·Y 격자를 표시합니다. 수영장 테두리가 비슷하게 포개지면 정상입니다.</p>
+        <div class="alignment-legend"><span><i class="camera-one"></i> 카메라 1</span><span><i class="camera-two"></i> 카메라 2</span></div>
+        <button id="generate-alignment" class="alignment-button" type="button" disabled>XY 좌표 적용 이미지 만들기 <b>→</b></button>
+        <p id="alignment-message" class="field-error" role="status">두 카메라 미리보기를 먼저 완료해 주세요.</p>
+      </div>
+      <div class="alignment-stage">
+        <div id="alignment-empty" class="alignment-empty"><strong>XY</strong><p>두 카메라 보정 후<br>통합 좌표 이미지가 표시됩니다.</p></div>
+        <img id="alignment-image" alt="두 카메라가 겹쳐진 XY 좌표 미리보기" hidden>
+        <div id="alignment-meta" class="alignment-meta" hidden><span>원점 (0, 0)</span><span id="alignment-size"></span></div>
+      </div>
+    </section>
+
+    <section class="color-panel">
+      <div class="color-copy">
+        <span class="step-kicker">04 · WB 및 노출 계산</span>
+        <h2>두 카메라의 색과 밝기를 서로 맞춥니다.</h2>
+        <p>원근 변환된 수영장 영역에서 반사와 극단적인 밝기를 제외하고 상대 WB와 노출 보정값을 계산합니다.</p>
+      </div>
+      <div id="color-empty" class="color-empty">
+        <strong>WB / EV</strong>
+        <span>XY 좌표 적용 이미지를 만들면 자동으로 계산됩니다.</span>
+      </div>
+      <div id="color-results" class="color-results" hidden>
+        <article data-color-camera="camera1">
+          <span>카메라 1</span>
+          <div><b>WB</b><strong class="wb-red"></strong><strong class="wb-blue"></strong></div>
+          <div><b>노출</b><strong class="exposure-ev"></strong></div>
+        </article>
+        <article data-color-camera="camera2">
+          <span>카메라 2</span>
+          <div><b>WB</b><strong class="wb-red"></strong><strong class="wb-blue"></strong></div>
+          <div><b>노출</b><strong class="exposure-ev"></strong></div>
+        </article>
+      </div>
+      <p class="color-note">WB는 현재 자동 WB 값에 곱할 R/B 보정 배율이며, 노출은 자동 노출에 적용할 EV 값입니다. 저장할 때 다시 계산해 config.json에 기록합니다.</p>
+    </section>
+
+    <section class="save-panel">
+      <div class="save-copy">
+        <span class="step-kicker">05 · 설정 저장</span>
+        <h2>통합 XY 좌표까지 확인했나요?</h2>
+        <p>회전 방향, 픽셀→미터 좌표 행렬, WB 및 노출 보정값을 함께 저장합니다.</p>
+      </div>
+      <div class="completion-list" aria-live="polite">
+        <span id="done-camera1"><i></i> 카메라 1</span>
+        <span id="done-camera2"><i></i> 카메라 2</span>
+      </div>
+      <button id="save-config" class="primary-button" type="button" disabled>
+        <span>config.json 저장</span><b aria-hidden="true">→</b>
+      </button>
+      <p id="save-message" class="save-message" role="status"></p>
+      <a id="download-config" class="download-link" href="/api/config" hidden>config.json 다시 내려받기</a>
+    </section>
+  </main>
+
+  <footer><span>{{ site_name }} Calibration v1.2</span><span>데이터는 이 장치 안에만 저장됩니다.</span></footer>
+
+  <template id="camera-template">
+    <article class="camera-card">
+      <header>
+        <div><span class="camera-number"></span><div><h3></h3><p>고정 설치된 카메라의 현재 시야를 사용하세요.</p></div></div>
+        <span class="camera-state">이미지 필요</span>
+      </header>
+      <div class="camera-grid">
+        <div>
+          <div class="upload-zone">
+            <input class="image-input" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+            <div class="empty-state">
+              <span class="upload-icon">＋</span>
+              <strong>카메라 이미지 추가</strong>
+              <small>사진 촬영 또는 파일 선택 · 최대 16MB</small>
+              <button class="secondary-button choose-image" type="button">이미지 선택</button>
+            </div>
+            <canvas class="point-canvas" aria-label="수영장 모서리 지정 영역"></canvas>
+            <div class="canvas-toolbar" hidden>
+              <span class="point-prompt">1번 · 좌상단을 눌러주세요</span>
+              <span class="toolbar-actions">
+                <button class="text-button change-image" type="button">이미지 변경</button>
+                <button class="text-button reset-points" type="button">점 초기화</button>
+              </span>
+            </div>
+          </div>
+          <p class="camera-error field-error" role="alert"></p>
+          <button class="preview-button" type="button" disabled>원근 변환 미리보기 <b>→</b></button>
+        </div>
+        <div class="preview-pane">
+          <div class="preview-empty"><span>TOP VIEW</span><p>4점을 지정하면<br>위에서 본 모습으로 펼칩니다.</p></div>
+          <img class="preview-image" alt="원근 변환 미리보기" hidden>
+          <div class="preview-controls" hidden aria-label="미리보기 방향 조정">
+            <button class="rotate-left" type="button" aria-label="미리보기를 왼쪽으로 90도 회전">↶ <span>왼쪽 90°</span></button>
+            <span class="rotation-status"><strong class="rotation-value">0°</strong><small>0° = 원본 위</small></span>
+            <button class="rotate-right" type="button" aria-label="미리보기를 오른쪽으로 90도 회전"><span>오른쪽 90°</span> ↷</button>
+            <button class="flip-horizontal" type="button" aria-label="미리보기를 좌우 반전">⇋ <span>좌우 반전</span></button>
+          </div>
+          <div class="preview-meta" hidden><span>원점 (0, 0)</span><span class="preview-size"></span></div>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>

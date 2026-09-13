@@ -1,0 +1,19 @@
+[Unit]
+Description=PoolSight camera calibration web app
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/pool-calibrator
+Environment=POOL_CALIBRATOR_DATA_DIR=/var/lib/pool-calibrator
+ExecStart=/opt/pool-calibrator/.venv/bin/gunicorn --workers 1 --threads 4 --bind 0.0.0.0:5000 --access-logfile - app:app
+Restart=on-failure
+RestartSec=3
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
